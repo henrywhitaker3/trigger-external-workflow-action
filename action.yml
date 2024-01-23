@@ -16,6 +16,7 @@ inputs:
   body:
     description: 'The JSON body to send the the external workflow'
     required: false
+    default: '{}'
   repo:
     description: 'The repository where you want to trigger the action'
     required: true
