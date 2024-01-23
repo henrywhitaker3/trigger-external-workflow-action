@@ -13,13 +13,13 @@ export default function useFetch() {
     return JSON.stringify(payload)
   }
 
-  function call(
+  async function call(
     repo: string,
     api: string,
     token: string,
     event: string,
     body: object
-  ) {
+  ): Promise<Response> {
     const url = formatUrl(api, repo)
     const payload = buildBody(event, body)
 

@@ -1,6 +1,8 @@
 import useFetch from '../src/fetch'
 import { enableFetchMocks } from 'jest-fetch-mock'
 
+let fetchMock: jest.SpyInstance
+
 beforeEach(() => {
   enableFetchMocks()
 })

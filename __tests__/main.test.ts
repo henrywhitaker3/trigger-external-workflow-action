@@ -13,16 +13,15 @@ import { enableFetchMocks } from 'jest-fetch-mock'
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
-// Other utilities
-const timeRegex = /^\d{2}:\d{2}:\d{2}/
+let fetchMock: jest.SpyInstance
 
 // Mock the GitHub Actions core library
 let infoMock: jest.SpyInstance
 let debugMock: jest.SpyInstance
 let errorMock: jest.SpyInstance
 let getInputMock: jest.SpyInstance
-let setFailedMock: jest.SpyInstance
-let setOutputMock: jest.SpyInstance
+// let setFailedMock: jest.SpyInstance
+// let setOutputMock: jest.SpyInstance
 
 describe('action', () => {
   beforeEach(() => {
@@ -32,8 +31,8 @@ describe('action', () => {
     debugMock = jest.spyOn(core, 'debug').mockImplementation()
     errorMock = jest.spyOn(core, 'error').mockImplementation()
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
-    setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
-    setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
+    // setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
+    // setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
     enableFetchMocks()
   })
 
@@ -58,6 +57,7 @@ describe('action', () => {
 
     await main.run()
     expect(runMock).toHaveReturned()
+    expect(fetchMock).toHaveBeenCalled()
 
     // Verify that all of the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Using event = some_event')

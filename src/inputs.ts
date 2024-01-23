@@ -7,7 +7,7 @@ export default function useInputs() {
   const event: string = core.getInput('event')
   const body: object = JSON.parse(core.getInput('body'))
 
-  function logInputs() {
+  function logInputs(): void {
     core.debug(`Using event = ${event}`)
     core.debug(`Using repo = ${repo}`)
     core.debug(`Using Github API = ${github_api}`)
