@@ -1,0 +1,16 @@
+name: Example Receiver
+
+on:
+  repository_dispatch:
+    types: [some_event]
+
+jobs:
+  some_event:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Some event
+        run: |
+          echo some_event trigger received
+          echo ${{ github.event.client_payload }}
+
