@@ -12,5 +12,5 @@ jobs:
       - name: Some event
         run: |
           echo some_event trigger received
-          echo ${{ github.event.client_payload }}
+          echo ${{ fromJson(github.event.client_payload) }}
 
