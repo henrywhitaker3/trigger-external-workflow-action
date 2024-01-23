@@ -22,6 +22,10 @@ inputs:
   token:
     description: 'The Github token to authenticate with the other repository'
     required: true
+  github_api:
+    description: 'The url of the Github API to run against'
+    required: false
+    default: 'https://api.github.com'
   
 
 # Define your outputs here.

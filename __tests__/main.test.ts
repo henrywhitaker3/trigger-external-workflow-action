@@ -8,6 +8,7 @@
 
 import * as core from '@actions/core'
 import * as main from '../src/main'
+import { enableFetchMocks } from 'jest-fetch-mock'
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
@@ -16,6 +17,7 @@ const runMock = jest.spyOn(main, 'run')
 const timeRegex = /^\d{2}:\d{2}:\d{2}/
 
 // Mock the GitHub Actions core library
+let infoMock: jest.SpyInstance
 let debugMock: jest.SpyInstance
 let errorMock: jest.SpyInstance
 let getInputMock: jest.SpyInstance
@@ -26,14 +28,16 @@ describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    infoMock = jest.spyOn(core, 'info').mockImplementation()
     debugMock = jest.spyOn(core, 'debug').mockImplementation()
     errorMock = jest.spyOn(core, 'error').mockImplementation()
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
     setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
     setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
+    enableFetchMocks()
   })
 
-  it('sets the time output', async () => {
+  it('logs the inputs correctly', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation((name: string): string => {
       switch (name) {
@@ -45,6 +49,8 @@ describe('action', () => {
           return JSON.stringify({ foo: 'bar' })
         case 'repo':
           return 'henrywhitaker3/trigger-external-workflow-action'
+        case 'github_api':
+          return 'https://api.github.com'
         default:
           return ''
       }
@@ -56,7 +62,9 @@ describe('action', () => {
     // Verify that all of the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Using event = some_event')
     expect(debugMock).toHaveBeenNthCalledWith(2, 'Using repo = henrywhitaker3/trigger-external-workflow-action')
-    expect(debugMock).toHaveBeenNthCalledWith(3, `Using body = ${JSON.stringify({foo: 'bar'})}`)
+    expect(debugMock).toHaveBeenNthCalledWith(3, 'Using Github API = https://api.github.com')
+    expect(debugMock).toHaveBeenNthCalledWith(4, `Using body = ${JSON.stringify({foo: 'bar'})}`)
+    expect(infoMock).toHaveBeenNthCalledWith(1, 'Workflow Triggered Successfully')
     expect(errorMock).not.toHaveBeenCalled()
   })
 

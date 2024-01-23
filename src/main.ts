@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import useInputs from './inputs'
+import useFetch from './fetch'
 
 /**
  * The main function for the action.
@@ -12,10 +13,15 @@ export async function run(): Promise<void> {
       repo,
       event,
       body,
+      github_api,
       logInputs
     } = useInputs()
 
     logInputs()
+
+    const { call } = useFetch()
+    await call(repo, github_api, token, event, body)
+    core.info('Workflow Triggered Successfully')
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
