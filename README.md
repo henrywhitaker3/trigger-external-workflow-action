@@ -1,6 +1,6 @@
 # Trigger remote action
 
-A Github action to trigger actions in another repo.
+A GitHub action to trigger actions in another repository.
 
 ## Usage
 
