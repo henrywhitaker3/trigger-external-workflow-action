@@ -5,12 +5,12 @@ export default function useFetch() {
     return `${api}/repos/${repo}/dispatches`
   }
 
-  function buildBody(event: string, body: object): string {
-    const payload = {
+  function buildBody(event: string, payload: object): string {
+    const body = {
       event_type: event,
-      client_payload: body
+      client_payload: payload
     }
-    return JSON.stringify(payload)
+    return JSON.stringify(body)
   }
 
   async function call(
@@ -18,18 +18,18 @@ export default function useFetch() {
     api: string,
     token: string,
     event: string,
-    body: object
+    payload: object
   ): Promise<void> {
     const url = formatUrl(api, repo)
-    const payload = buildBody(event, body)
+    const body = buildBody(event, payload)
 
     core.debug(`URL used is ${url}`)
     core.debug(`Payload to send is ${JSON.stringify(payload)}`)
 
     try {
-      const resp = await fetch(formatUrl(api, repo), {
+      const resp = await fetch(url, {
         method: 'POST',
-        body: buildBody(event, body),
+        body,
         headers: {
           Accept: 'application/json',
           Authorization: `Bearer ${token}`
