@@ -7,10 +7,11 @@
  */
 
 import { enableFetchMocks } from 'jest-fetch-mock'
-enableFetchMocks()
 import * as core from '@actions/core'
 import * as main from '../src/main'
 
+enableFetchMocks()
+// let fetchMock: FetchMock
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
