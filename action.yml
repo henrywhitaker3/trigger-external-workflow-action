@@ -1,23 +1,38 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Trigger external workflow'
+description: 'An action that lets you trigger workflows in another repository'
+author: 'Henry Whitaker'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'scissors'
+  color: 'blue'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  event:
+    description: 'The name of the event in the other repository'
     required: true
-    default: '1000'
+    default: ''
+  body:
+    description: 'The JSON body to send the the external workflow'
+    required: false
+    default: '{}'
+  repo:
+    description: 'The repository where you want to trigger the action'
+    required: true
+  token:
+    description: 'The Github token to authenticate with the other repository'
+    required: true
+  github_api:
+    description: 'The url of the Github API to run against'
+    required: false
+    default: 'https://api.github.com'
+  
 
 # Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+# outputs:
+#   time:
+#     description: 'Your output description here'
 
 runs:
   using: node20
