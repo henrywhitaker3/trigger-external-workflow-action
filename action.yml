@@ -1,4 +1,4 @@
-name: 'Trigger external workflow'
+name: 'Trigger external action'
 description: 'An action that lets you trigger workflows in another repository'
 author: 'Henry Whitaker'
 
