@@ -61,10 +61,22 @@ describe('action', () => {
 
     // Verify that all of the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Using event = some_event')
-    expect(debugMock).toHaveBeenNthCalledWith(2, 'Using repo = henrywhitaker3/trigger-external-workflow-action')
-    expect(debugMock).toHaveBeenNthCalledWith(3, 'Using Github API = https://api.github.com')
-    expect(debugMock).toHaveBeenNthCalledWith(4, `Using body = ${JSON.stringify({foo: 'bar'})}`)
-    expect(infoMock).toHaveBeenNthCalledWith(1, 'Workflow Triggered Successfully')
+    expect(debugMock).toHaveBeenNthCalledWith(
+      2,
+      'Using repo = henrywhitaker3/trigger-external-workflow-action'
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      3,
+      'Using Github API = https://api.github.com'
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      4,
+      `Using body = ${JSON.stringify({ foo: 'bar' })}`
+    )
+    expect(infoMock).toHaveBeenNthCalledWith(
+      1,
+      'Workflow Triggered Successfully'
+    )
     expect(errorMock).not.toHaveBeenCalled()
   })
 

@@ -8,14 +8,7 @@ import useFetch from './fetch'
  */
 export async function run(): Promise<void> {
   try {
-    const {
-      token,
-      repo,
-      event,
-      body,
-      github_api,
-      logInputs
-    } = useInputs()
+    const { token, repo, event, body, github_api, logInputs } = useInputs()
 
     logInputs()
 
