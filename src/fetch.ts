@@ -19,21 +19,31 @@ export default function useFetch() {
     token: string,
     event: string,
     body: object
-  ): Promise<Response> {
+  ): Promise<void> {
     const url = formatUrl(api, repo)
     const payload = buildBody(event, body)
 
     core.debug(`URL used is ${url}`)
     core.debug(`Payload to send is ${JSON.stringify(payload)}`)
 
-    return fetch(formatUrl(api, repo), {
-      method: 'POST',
-      body: buildBody(event, body),
-      headers: {
-        Accept: 'application/json',
-        Authorization: `token ${token}`
+    try {
+      const resp = await fetch(formatUrl(api, repo), {
+        method: 'POST',
+        body: buildBody(event, body),
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (resp.status !== 204) {
+        throw new Error(`Error, expected status 204, got ${resp.status}`)
       }
-    })
+    } catch (err) {
+      if (err instanceof Error) {
+        core.error(err)
+      }
+      throw err
+    }
   }
 
   return {

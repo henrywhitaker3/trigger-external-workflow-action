@@ -6,12 +6,12 @@
  * variables following the pattern `INPUT_<INPUT_NAME>`.
  */
 
-import { enableFetchMocks } from 'jest-fetch-mock'
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock'
 import * as core from '@actions/core'
 import * as main from '../src/main'
 
 enableFetchMocks()
-// let fetchMock: FetchMock
+
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
@@ -53,6 +53,9 @@ describe('action', () => {
           return ''
       }
     })
+    fetchMock.mockResponse(
+      async () => new Promise(resolve => resolve({ status: 204 }))
+    )
 
     await main.run()
     expect(runMock).toHaveReturned()
