@@ -2722,7 +2722,7 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 399:
+/***/ 560:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -2751,24 +2751,146 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(186));
+function useFetch() {
+    function formatUrl(api, repo) {
+        return `${api}/repos/${repo}/dispatches`;
+    }
+    function buildBody(event, body) {
+        const payload = {
+            event_type: event,
+            client_payload: body
+        };
+        return JSON.stringify(payload);
+    }
+    async function call(repo, api, token, event, body) {
+        const url = formatUrl(api, repo);
+        const payload = buildBody(event, body);
+        core.debug(`URL used is ${url}`);
+        core.debug(`Payload to send is ${JSON.stringify(payload)}`);
+        return fetch(formatUrl(api, repo), {
+            method: 'POST',
+            body: buildBody(event, body),
+            headers: {
+                Accept: 'application/json',
+                Authorization: `token ${token}`
+            }
+        });
+    }
+    return {
+        call
+    };
+}
+exports["default"] = useFetch;
+
+
+/***/ }),
+
+/***/ 63:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(186));
+function useInputs() {
+    const token = core.getInput('token');
+    const repo = core.getInput('repo');
+    const github_api = core.getInput('github_api');
+    const event = core.getInput('event');
+    const body = JSON.parse(core.getInput('body'));
+    function logInputs() {
+        core.debug(`Using event = ${event}`);
+        core.debug(`Using repo = ${repo}`);
+        core.debug(`Using Github API = ${github_api}`);
+        core.debug(`Using body = ${JSON.stringify(body)}`);
+    }
+    // function formatUrl(): string {
+    // }
+    return {
+        token,
+        repo,
+        event,
+        body,
+        github_api,
+        logInputs
+    };
+}
+exports["default"] = useInputs;
+
+
+/***/ }),
+
+/***/ 399:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(186));
-const wait_1 = __nccwpck_require__(259);
+const inputs_1 = __importDefault(__nccwpck_require__(63));
+const fetch_1 = __importDefault(__nccwpck_require__(560));
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
     try {
-        const ms = core.getInput('milliseconds');
-        // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        core.debug(`Waiting ${ms} milliseconds ...`);
-        // Log the current timestamp, wait, then log the new timestamp
-        core.debug(new Date().toTimeString());
-        await (0, wait_1.wait)(parseInt(ms, 10));
-        core.debug(new Date().toTimeString());
-        // Set outputs for other workflow steps to use
-        core.setOutput('time', new Date().toTimeString());
+        const { token, repo, event, body, github_api, logInputs } = (0, inputs_1.default)();
+        logInputs();
+        const { call } = (0, fetch_1.default)();
+        await call(repo, github_api, token, event, body);
+        core.info('Workflow Triggered Successfully');
     }
     catch (error) {
         // Fail the workflow run if an error occurs
@@ -2777,31 +2899,6 @@ async function run() {
     }
 }
 exports.run = run;
-
-
-/***/ }),
-
-/***/ 259:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wait = void 0;
-/**
- * Wait for a number of milliseconds.
- * @param milliseconds The number of milliseconds to wait.
- * @returns {Promise<string>} Resolves with 'done!' after the wait is over.
- */
-async function wait(milliseconds) {
-    return new Promise(resolve => {
-        if (isNaN(milliseconds)) {
-            throw new Error('milliseconds not a number');
-        }
-        setTimeout(() => resolve('done!'), milliseconds);
-    });
-}
-exports.wait = wait;
 
 
 /***/ }),
