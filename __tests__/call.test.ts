@@ -1,8 +1,7 @@
-import { FetchMock, enableFetchMocks } from 'jest-fetch-mock'
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock'
 import useFetch from '../src/fetch'
 
 enableFetchMocks()
-let fetchMock: FetchMock
 
 describe('call', () => {
   it('formats the request properly', async () => {
