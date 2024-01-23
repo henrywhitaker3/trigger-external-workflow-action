@@ -45,8 +45,14 @@ jobs:
     steps:
       - uses: henrywhitaker3/trigger-external-workflow-action@v1
         with:
-          token: ${{ secrets.TRIGGER_TOKEN }} # You need to setup a PAT for this, as secrets.GITHUB_TOKEN is repo-scoped and won't work
-          repo: henrywhitaker3/trigger-external-workflow-action # Replace with your repo
-          event: some_event # Replace with your event name
+          # You need to setup a PAT for this, as secrets.GITHUB_TOKEN 
+          # is repo-scoped and won't work
+          token: ${{ secrets.TRIGGER_TOKEN }} 
+          # Replace with your repo
+          repo: henrywhitaker3/trigger-external-workflow-action 
+          # Replace with your event name
+          event: some_event 
+          # Add your own JSON and access it in the target workflow with
+          # ${{ github.event.client_payload.<your_key_here> }}
           payload: '{"foo": "bar"}'
 ```
