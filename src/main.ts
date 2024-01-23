@@ -8,12 +8,12 @@ import useFetch from './fetch'
  */
 export async function run(): Promise<void> {
   try {
-    const { token, repo, event, body, github_api, logInputs } = useInputs()
+    const { token, repo, event, payload, github_api, logInputs } = useInputs()
 
     logInputs()
 
     const { call } = useFetch()
-    await call(repo, github_api, token, event, body)
+    await call(repo, github_api, token, event, payload)
     core.info('Workflow Triggered Successfully')
   } catch (error) {
     // Fail the workflow run if an error occurs

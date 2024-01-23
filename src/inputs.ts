@@ -5,13 +5,13 @@ export default function useInputs() {
   const repo: string = core.getInput('repo')
   const github_api: string = core.getInput('github_api')
   const event: string = core.getInput('event')
-  const body: object = JSON.parse(core.getInput('body'))
+  const payload: object = JSON.parse(core.getInput('payload'))
 
   function logInputs(): void {
     core.debug(`Using event = ${event}`)
     core.debug(`Using repo = ${repo}`)
     core.debug(`Using Github API = ${github_api}`)
-    core.debug(`Using body = ${JSON.stringify(body)}`)
+    core.debug(`Using payload = ${JSON.stringify(payload)}`)
   }
 
   // function formatUrl(): string {
@@ -22,7 +22,7 @@ export default function useInputs() {
     token,
     repo,
     event,
-    body,
+    payload,
     github_api,
     logInputs
   }

@@ -41,7 +41,7 @@ describe('action', () => {
           return 'some_event'
         case 'token':
           return 'token'
-        case 'body':
+        case 'payload':
           return JSON.stringify({ foo: 'bar' })
         case 'repo':
           return 'henrywhitaker3/trigger-external-workflow-action'
@@ -70,7 +70,7 @@ describe('action', () => {
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       4,
-      `Using body = ${JSON.stringify({ foo: 'bar' })}`
+      `Using payload = ${JSON.stringify({ foo: 'bar' })}`
     )
     expect(infoMock).toHaveBeenNthCalledWith(
       1,
@@ -87,7 +87,7 @@ describe('action', () => {
           return ''
         case 'token':
           return 'token'
-        case 'body':
+        case 'payload':
           return JSON.stringify({ foo: 'bar' })
         case 'repo':
           return 'henrywhitaker3/trigger-external-workflow-action'
@@ -116,7 +116,7 @@ describe('action', () => {
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       4,
-      `Using body = ${JSON.stringify({ foo: 'bar' })}`
+      `Using payload = ${JSON.stringify({ foo: 'bar' })}`
     )
     expect(errorMock).toHaveBeenCalled()
     expect(setFailedMock).toHaveBeenNthCalledWith(

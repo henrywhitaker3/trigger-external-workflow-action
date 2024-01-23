@@ -2756,22 +2756,22 @@ function useFetch() {
     function formatUrl(api, repo) {
         return `${api}/repos/${repo}/dispatches`;
     }
-    function buildBody(event, body) {
-        const payload = {
+    function buildBody(event, payload) {
+        const body = {
             event_type: event,
-            client_payload: body
+            client_payload: payload
         };
-        return JSON.stringify(payload);
+        return JSON.stringify(body);
     }
-    async function call(repo, api, token, event, body) {
+    async function call(repo, api, token, event, payload) {
         const url = formatUrl(api, repo);
-        const payload = buildBody(event, body);
+        const body = buildBody(event, payload);
         core.debug(`URL used is ${url}`);
         core.debug(`Payload to send is ${JSON.stringify(payload)}`);
         try {
-            const resp = await fetch(formatUrl(api, repo), {
+            const resp = await fetch(url, {
                 method: 'POST',
-                body: buildBody(event, body),
+                body,
                 headers: {
                     Accept: 'application/json',
                     Authorization: `Bearer ${token}`
@@ -2832,12 +2832,12 @@ function useInputs() {
     const repo = core.getInput('repo');
     const github_api = core.getInput('github_api');
     const event = core.getInput('event');
-    const body = JSON.parse(core.getInput('body'));
+    const payload = JSON.parse(core.getInput('payload'));
     function logInputs() {
         core.debug(`Using event = ${event}`);
         core.debug(`Using repo = ${repo}`);
         core.debug(`Using Github API = ${github_api}`);
-        core.debug(`Using body = ${JSON.stringify(body)}`);
+        core.debug(`Using payload = ${JSON.stringify(payload)}`);
     }
     // function formatUrl(): string {
     // }
@@ -2845,7 +2845,7 @@ function useInputs() {
         token,
         repo,
         event,
-        body,
+        payload,
         github_api,
         logInputs
     };
@@ -2897,10 +2897,10 @@ const fetch_1 = __importDefault(__nccwpck_require__(560));
  */
 async function run() {
     try {
-        const { token, repo, event, body, github_api, logInputs } = (0, inputs_1.default)();
+        const { token, repo, event, payload, github_api, logInputs } = (0, inputs_1.default)();
         logInputs();
         const { call } = (0, fetch_1.default)();
-        await call(repo, github_api, token, event, body);
+        await call(repo, github_api, token, event, payload);
         core.info('Workflow Triggered Successfully');
     }
     catch (error) {
