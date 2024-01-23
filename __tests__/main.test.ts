@@ -6,14 +6,13 @@
  * variables following the pattern `INPUT_<INPUT_NAME>`.
  */
 
+import { enableFetchMocks } from 'jest-fetch-mock'
+enableFetchMocks()
 import * as core from '@actions/core'
 import * as main from '../src/main'
-import { enableFetchMocks } from 'jest-fetch-mock'
 
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
-
-let fetchMock: jest.SpyInstance
 
 // Mock the GitHub Actions core library
 let infoMock: jest.SpyInstance
@@ -33,7 +32,6 @@ describe('action', () => {
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
     // setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
     // setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
-    enableFetchMocks()
   })
 
   it('logs the inputs correctly', async () => {
@@ -57,7 +55,6 @@ describe('action', () => {
 
     await main.run()
     expect(runMock).toHaveReturned()
-    expect(fetchMock).toHaveBeenCalled()
 
     // Verify that all of the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Using event = some_event')

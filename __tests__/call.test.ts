@@ -1,11 +1,7 @@
-import useFetch from '../src/fetch'
 import { enableFetchMocks } from 'jest-fetch-mock'
+enableFetchMocks()
 
-let fetchMock: jest.SpyInstance
-
-beforeEach(() => {
-  enableFetchMocks()
-})
+import useFetch from '../src/fetch'
 
 describe('call', () => {
   it('formats the request properly', async () => {
@@ -19,9 +15,10 @@ describe('call', () => {
       { foo: 'bar' }
     )
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://api.example.com/repos/henrywhitaker3/bongo/dispatches',
-      {
+    const url: string = fetchMock.mock.calls[0][0] as string
+    const params: object = fetchMock.mock.calls[0][1] as object
+    expect(url).toBe('https://api.example.com/repos/henrywhitaker3/bongo/dispatches')
+    expect(params).toStrictEqual({
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -33,7 +30,7 @@ describe('call', () => {
             foo: 'bar'
           }
         })
-      }
-    )
+      })
+      
   })
 })
