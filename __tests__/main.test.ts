@@ -119,28 +119,9 @@ describe('action', () => {
       `Using body = ${JSON.stringify({ foo: 'bar' })}`
     )
     expect(errorMock).toHaveBeenCalled()
-    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'Error, expected status 204, got 422')
+    expect(setFailedMock).toHaveBeenNthCalledWith(
+      1,
+      'Error, expected status 204, got 422'
+    )
   })
-
-  // it('sets a failed status', async () => {
-  //   // Set the action's inputs as return values from core.getInput()
-  //   getInputMock.mockImplementation((name: string): string => {
-  //     switch (name) {
-  //       case 'milliseconds':
-  //         return 'this is not a number'
-  //       default:
-  //         return ''
-  //     }
-  //   })
-
-  //   await main.run()
-  //   expect(runMock).toHaveReturned()
-
-  //   // Verify that all of the core library functions were called correctly
-  //   expect(setFailedMock).toHaveBeenNthCalledWith(
-  //     1,
-  //     'milliseconds not a number'
-  //   )
-  //   expect(errorMock).not.toHaveBeenCalled()
-  // })
 })
