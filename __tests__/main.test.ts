@@ -6,12 +6,12 @@
  * variables following the pattern `INPUT_<INPUT_NAME>`.
  */
 
-import { enableFetchMocks } from 'jest-fetch-mock'
+import fetchMock, { enableFetchMocks } from 'jest-fetch-mock'
 import * as core from '@actions/core'
 import * as main from '../src/main'
 
 enableFetchMocks()
-// let fetchMock: FetchMock
+
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
@@ -20,8 +20,7 @@ let infoMock: jest.SpyInstance
 let debugMock: jest.SpyInstance
 let errorMock: jest.SpyInstance
 let getInputMock: jest.SpyInstance
-// let setFailedMock: jest.SpyInstance
-// let setOutputMock: jest.SpyInstance
+let setFailedMock: jest.SpyInstance
 
 describe('action', () => {
   beforeEach(() => {
@@ -31,11 +30,10 @@ describe('action', () => {
     debugMock = jest.spyOn(core, 'debug').mockImplementation()
     errorMock = jest.spyOn(core, 'error').mockImplementation()
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
-    // setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
-    // setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
+    setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
   })
 
-  it('logs the inputs correctly', async () => {
+  it('runs correctly with sane inputs', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation((name: string): string => {
       switch (name) {
@@ -53,6 +51,9 @@ describe('action', () => {
           return ''
       }
     })
+    fetchMock.mockResponse(
+      async () => new Promise(resolve => resolve({ status: 204 }))
+    )
 
     await main.run()
     expect(runMock).toHaveReturned()
@@ -78,25 +79,49 @@ describe('action', () => {
     expect(errorMock).not.toHaveBeenCalled()
   })
 
-  // it('sets a failed status', async () => {
-  //   // Set the action's inputs as return values from core.getInput()
-  //   getInputMock.mockImplementation((name: string): string => {
-  //     switch (name) {
-  //       case 'milliseconds':
-  //         return 'this is not a number'
-  //       default:
-  //         return ''
-  //     }
-  //   })
+  it('errors when not receiving a correct status response code', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'event':
+          return ''
+        case 'token':
+          return 'token'
+        case 'body':
+          return JSON.stringify({ foo: 'bar' })
+        case 'repo':
+          return 'henrywhitaker3/trigger-external-workflow-action'
+        case 'github_api':
+          return 'https://api.github.com'
+        default:
+          return ''
+      }
+    })
+    fetchMock.mockResponse(
+      async () => new Promise(resolve => resolve({ status: 422 }))
+    )
 
-  //   await main.run()
-  //   expect(runMock).toHaveReturned()
+    await main.run()
+    expect(runMock).toHaveReturned()
 
-  //   // Verify that all of the core library functions were called correctly
-  //   expect(setFailedMock).toHaveBeenNthCalledWith(
-  //     1,
-  //     'milliseconds not a number'
-  //   )
-  //   expect(errorMock).not.toHaveBeenCalled()
-  // })
+    // Verify that all of the core library functions were called correctly
+    expect(debugMock).toHaveBeenNthCalledWith(1, 'Using event = ')
+    expect(debugMock).toHaveBeenNthCalledWith(
+      2,
+      'Using repo = henrywhitaker3/trigger-external-workflow-action'
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      3,
+      'Using Github API = https://api.github.com'
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      4,
+      `Using body = ${JSON.stringify({ foo: 'bar' })}`
+    )
+    expect(errorMock).toHaveBeenCalled()
+    expect(setFailedMock).toHaveBeenNthCalledWith(
+      1,
+      'Error, expected status 204, got 422'
+    )
+  })
 })

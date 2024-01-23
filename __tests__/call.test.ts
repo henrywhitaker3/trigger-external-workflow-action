@@ -7,6 +7,9 @@ describe('call', () => {
   it('formats the request properly', async () => {
     const { call } = useFetch()
 
+    fetchMock.mockResponse(
+      async () => new Promise(resolve => resolve({ status: 204 }))
+    )
     await call(
       'henrywhitaker3/bongo',
       'https://api.example.com',
@@ -24,7 +27,7 @@ describe('call', () => {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        Authorization: 'token token'
+        Authorization: 'Bearer token'
       },
       body: JSON.stringify({
         event_type: 'some_event',
